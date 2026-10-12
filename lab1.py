@@ -23,11 +23,11 @@ def banking_problem(n : int):
 if __name__ == "__main__":
     #random.seed(42)  # Set a seed for reproducibility
     count = 0
-    for i in range(100):  # Run the test multiple times
+    for i in range(10000):  # Run the test multiple times
         if not test_equality():
             count += 1
-            print("Test failed: (x+y)+z != x+(y+z)")
-    print(f"Total failed tests: {count}%")
+            #print("Test failed: (x+y)+z != x+(y+z)")
+    print(f"Total failed tests: {count/10000*100:.2f}%")
     
     print(f"Banking problem result for 50 years: ")
     res = [banking_problem(50)]
