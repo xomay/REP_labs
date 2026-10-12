@@ -1,1 +1,0 @@
-Total failed tests: 17.53%
