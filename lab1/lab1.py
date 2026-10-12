@@ -1,3 +1,4 @@
+from decimal import Decimal, getcontext
 import math
 import random
 
@@ -12,10 +13,12 @@ def test_equality():
         print("AssertionError: (x+y)+z != x+(y+z)")
         return False
     
-def banking_problem(n : int):
-    deposit = math.e
+def banking_problem(n : int = 50, prec = 100):
+    #deposit = math.e --> old implementation with a lack of precision
+    getcontext().prec = prec
+    deposit = Decimal(1).exp()
     for i in range(1, n+1):
-        deposit = (deposit-1) * i
+        deposit = (deposit - 1) * i
         #print(f"Year {i}: Deposit after interest: {deposit:.2f}")
     return deposit-1 # 1 euro fee
     
