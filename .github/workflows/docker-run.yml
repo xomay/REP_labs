@@ -1,6 +1,8 @@
 name: Docker Run
 run-name: ${{ github.actor }} is running the Docker container
 on: [push]
+permissions:
+  contents: write
 jobs:
   Explore-GitHub-Actions:
     runs-on: ubuntu-latest
