@@ -1,0 +1,33 @@
+features
+	Banking
+		mandatory
+			Language {abstract}
+				alternative
+					Python
+						alternative
+							CPython
+							PyPy
+							PythonVersion
+								alternative
+									"Python3-10"
+									"Python3-11"
+									"Python3-12"
+					Java
+						mandatory
+							JavaVersion
+								alternative
+									"Java 21"
+									"Java 17"
+		mandatory
+			Implementation
+				alternative
+					"Decimal_exp"
+					"math_exp"
+					"BigDecimal"
+					"Math_E"
+
+constraints
+	"Decimal_exp" => Python
+	"math_exp" => Python
+	BigDecimal => Java
+	"Math_E" => Java
