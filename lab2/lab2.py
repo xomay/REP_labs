@@ -9,10 +9,10 @@ def test_equality():
     y = random.random()
     z = random.random()
     try:
-        assert (x+y) + z == x + (y+z)
+        assert x * (y + z) == x * y + x * z
         return True
     except AssertionError:
-        #print("AssertionError: (x+y)+z != x+(y+z)")
+        #print("AssertionError: x * (y + z) != x * y + x * z")
         return False
     
 def banking_problem(n : int = 50, prec = 100):
