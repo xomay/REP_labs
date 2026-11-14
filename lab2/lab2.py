@@ -12,7 +12,18 @@ def test_equality():
         assert (x+y) + z == x + (y+z)
         return True
     except AssertionError:
-        #print("AssertionError: (x+y)+z != x+(y+z)")
+        #print("AssertionError: (x+y) + z != x + (y+z)")
+        return False
+    
+def test_equality_decimal():
+    x = Decimal(str(random.random()))
+    y = Decimal(str(random.random()))
+    z = Decimal(str(random.random()))
+    try:
+        assert (x+y) + z == x + (y+z)
+        return True
+    except AssertionError:
+        #print("AssertionError: (x+y) + z != x + (y+z)")
         return False
     
 def banking_problem(n : int = 50, prec = 100):
@@ -26,7 +37,7 @@ def banking_problem(n : int = 50, prec = 100):
     
 
 if __name__ == "__main__":
-    if sys.argv[1]:
+    if len(sys.argv) > 1:
         current_dir = sys.argv[1]
     else:
         current_dir = os.path.dirname(__file__)
@@ -38,6 +49,7 @@ if __name__ == "__main__":
             count += 1
             #print("Test failed: (x+y)+z != x+(y+z)")
     print(f"Total failed tests: {count/10000*100:.2f}%")
+    print(f"Total successful tests: {100 - count/10000*100:.2f}%")
     
     with open(os.path.join(current_dir, "answer_associativity.txt"), "w") as f:
         f.write(f"Total failed tests: {count/10000*100:.2f}%\n")
