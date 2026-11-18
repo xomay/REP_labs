@@ -1,0 +1,34 @@
+import java.math.BigDecimal;
+import java.math.MathContext;
+import java.math.RoundingMode;
+
+public class Banking {
+    public static void main(String[] args) {
+        int years = Integer.parseInt(args[0]);
+        int precision = Integer.parseInt(args[1]);
+{% if implementation == "BigDecimal" %}
+        // Approximate e with guard digits, then round to the experiment precision.
+        MathContext guard = new MathContext(precision + 20, RoundingMode.HALF_EVEN);
+        BigDecimal term = BigDecimal.ONE;
+        BigDecimal balance = BigDecimal.ONE;
+        BigDecimal tolerance = BigDecimal.ONE.scaleByPowerOfTen(-precision - 20);
+        for (int k = 1; ; k++) {
+            term = term.divide(BigDecimal.valueOf(k), guard);
+            balance = balance.add(term, guard);
+            if (term.compareTo(tolerance) < 0) break;
+        }
+        MathContext mc = new MathContext(precision, RoundingMode.HALF_EVEN);
+        balance = balance.round(mc);
+        for (int year = 1; year <= years; year++) {
+            balance = balance.subtract(BigDecimal.ONE, mc)
+                             .multiply(BigDecimal.valueOf(year), mc);
+        }
+        String answer = balance.subtract(BigDecimal.ONE, mc).toString();
+{% else %}
+        double balance = Math.E;
+        for (int year = 1; year <= years; year++) balance = (balance - 1) * year;
+        String answer = Double.toString(balance - 1);
+{% endif %}
+        System.out.println(answer);
+    }
+}

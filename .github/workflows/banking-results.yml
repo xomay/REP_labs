@@ -1,0 +1,109 @@
+name: Banking results
+
+on:
+  push:
+    paths:
+      - 'lab3/**'
+      - '!lab3/serializing/results/**'
+      - '.github/workflows/banking-results.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: banking-results-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  experiment:
+    strategy:
+      fail-fast: false
+      matrix:
+        runner: [ubuntu-24.04, ubuntu-24.04-arm]
+    runs-on: ${{ matrix.runner }}
+    steps:
+      - uses: actions/checkout@v6
+
+      - name: Set up PyPy
+        id: pypy
+        uses: actions/setup-python@v6
+        with:
+          python-version: 'pypy3.10'
+
+      - name: Set up CPython versions
+        uses: actions/setup-python@v6
+        with:
+          python-version: |
+            3.10
+            3.11
+            3.12
+
+      - name: Set up Java 17
+        id: java17
+        uses: actions/setup-java@v5
+        with:
+          distribution: temurin
+          java-version: '17'
+
+      - name: Set up Java 21
+        id: java21
+        uses: actions/setup-java@v5
+        with:
+          distribution: temurin
+          java-version: '21'
+
+      - name: Install dependencies
+        run: python -m pip install flamapy==2.6.0 Jinja2==3.1.6
+
+      - name: Sample configurations
+        # The model has 14 configurations; use the same seed on both architectures.
+        run: >-
+          python lab3/sample.py lab3/Banking.uvl --size 14 --seed 1
+          -o lab3/serializing/results/sample-${{ matrix.runner }}.csv
+
+      - name: Generate and run variants
+        env:
+          PYTHON_PYPY: ${{ steps.pypy.outputs.python-path }}
+          JAVA_17: ${{ steps.java17.outputs.path }}/bin/java
+          JAVA_21: ${{ steps.java21.outputs.path }}/bin/java
+          RUNNER_LABEL: ${{ matrix.runner }}
+        run: >-
+          python lab3/serializing/run_sample.py --strict
+          --sample lab3/serializing/results/sample-${{ matrix.runner }}.csv
+          --output lab3/serializing/results/results-${{ matrix.runner }}.csv
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: banking-${{ matrix.runner }}
+          path: |
+            lab3/serializing/results/sample-${{ matrix.runner }}.csv
+            lab3/serializing/results/results-${{ matrix.runner }}.csv
+          if-no-files-found: error
+
+  save-results:
+    needs: experiment
+    runs-on: ubuntu-24.04
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          ref: ${{ github.ref_name }}
+
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: banking-*
+          merge-multiple: true
+          path: lab3/serializing/results
+
+      - name: Commit CSV files
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add lab3/serializing/results/*.csv
+          if ! git diff --cached --quiet; then
+            git commit -m "Update banking experiment results"
+            git pull --rebase
+            git push
+          fi

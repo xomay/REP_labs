@@ -1,0 +1,19 @@
+import math
+import sys
+from decimal import Decimal, localcontext
+
+years, precision = map(int, sys.argv[1:])
+{% if implementation == "Decimal_exp" %}
+with localcontext() as ctx:
+    ctx.prec = precision
+    balance = Decimal(1).exp()
+    for year in range(1, years + 1):
+        balance = (balance - 1) * year
+    answer = str(balance - 1)
+{% else %}
+balance = math.exp(1)
+for year in range(1, years + 1):
+    balance = (balance - 1) * year
+answer = repr(balance - 1)
+{% endif %}
+print(answer)
