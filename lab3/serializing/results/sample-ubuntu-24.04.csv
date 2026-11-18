@@ -1,0 +1,15 @@
+config_id,origin_of_config,Language,Python,PythonVersion,JavaVersion,Implementation
+r01,random,Java,,,Java 17,Math_E
+r02,random,Python,PythonVersion,Python3-10,,Decimal_exp
+r03,random,Python,PythonVersion,Python3-11,,Decimal_exp
+r04,random,Python,PyPy,,,Decimal_exp
+r05,random,Python,PyPy,,,math_exp
+r06,random,Python,PythonVersion,Python3-10,,math_exp
+r07,random,Java,,,Java 21,Math_E
+r08,random,Java,,,Java 17,BigDecimal
+r09,random,Java,,,Java 21,BigDecimal
+r10,random,Python,PythonVersion,Python3-12,,math_exp
+r11,random,Python,PythonVersion,Python3-11,,math_exp
+r12,random,Python,PythonVersion,Python3-12,,Decimal_exp
+r13,random,Python,CPython,,,Decimal_exp
+r14,random,Python,CPython,,,math_exp
